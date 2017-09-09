@@ -37,4 +37,159 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe "GET #edit" do
+    context "given valid id" do
+      it "renders edit page" do
+        user = create( :user )
+        log_in_as( user )
+        get :edit, params: { id: user.id }
+        expect( response ).to render_template :edit
+      end
+
+      it "makes flash have messages" do
+        user = create( :user )
+        get :edit, params: { id: user.id }
+        expect( flash ).not_to be_empty
+      end
+    end
+
+    context "when user accesses other user's edit page" do
+      let( :user ){ create( :user ) }
+      let( :archer){ create( :archer ) }
+      before do
+        log_in_as( archer )
+        get :edit, params: { id: user.id }
+      end
+      it "doesn't make flash have any error messages" do
+        expect( flash ).to be_empty
+      end
+
+      it "redirects root url" do
+        expect( response).to redirect_to root_url
+      end
+    end
+  end
+
+  describe "PATCH #update" do
+    context "given invalid information" do
+      it "renders edit page" do
+        user = create( :user )
+
+        log_in_as( user )
+
+        patch :update, params: { user: { name: "",
+                                         email: "foo@invalid",
+                                         password: "foo",
+                                         password_confirmation: "bar" },
+                                 id: user.id }
+
+        expect( response ).to render_template :edit
+        expect( assigns( :user ).errors.count ).to eq 4
+      end
+    end
+
+    context "when not logged in" do
+      it "redirects log in page " do
+        user = create( :user )
+        patch :update, params: { id: user.id,
+                                 user: { name: user.name,
+                                         email: user.email } }
+        expect( response ).to redirect_to login_url
+      end
+    end
+
+    context "given valid information" do
+      let( :user ){ create( :user ) }
+
+      before do
+        log_in_as user
+        patch :update, params: { id: user.id,
+                                 user: { name: "Foo Bar",
+                                         email: "foo@bar.com",
+                                         password: "",
+                                         password_confirmation: "" } }
+      end
+
+      it "redirects show page " do
+        expect( response ).to redirect_to user_path( user.id )
+      end
+
+      specify "flash is not empty" do
+        expect( flash ).not_to be_empty
+      end
+
+      it "saves new information at DB" do
+        user2 = User.find( user.id )
+        expect( user2.name ).to eq "Foo Bar"
+        expect( user2.email ).to eq "foo@bar.com"
+      end
+    end
+
+    context "when user edits other user information" do
+      let( :user ){ create( :user ) }
+      let( :archer ){ create( :archer ) }
+      before do
+        log_in_as( archer )
+        patch :update, params: { id: user.id,
+                                 user: { name: user.name,
+                                         email: user.email } }
+      end
+      it "doesn't make flash have any messages" do
+        expect( flash ).to be_empty
+      end
+      it "redirects root_url" do
+        expect( response ).to redirect_to root_url
+      end
+    end
+
+    context "when user send request maliciously" do
+      it "doesn't allow updating db" do
+        user = create( :user )
+        log_in_as( user )
+        patch :update, params: { id: user.id,
+                                 user: { name: user.name,
+                                         email: user.email,
+                                         admin: 1 } }
+        expect( user.reload ).not_to be_admin
+      end
+    end
+  end
+
+  describe "GET #index" do
+    context "when not logged in" do
+      it "redirects login_url" do
+        get :index
+        expect( response ).to redirect_to login_url
+      end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    context "when not logged in" do
+      it "doesn't allow operation and redirects to root_url" do
+        archer = create( :archer )
+        
+        expect{
+          delete :destroy, params: { id: archer.id }
+        }.not_to change( User, :count )
+
+        expect( response ).to redirect_to root_url
+      end
+    end
+
+    context "when logged in as forbidden user" do
+      it "doesn't allow operation and redirects to root_url" do
+        user = create( :user )
+        archer = create( :archer )
+        log_in_as( archer )
+
+        expect{
+          delete :destroy, params: { id: user }
+        }.not_to change( User, :count )
+
+        expect( response ).to redirect_to root_url
+      end
+    end
+  end
 end

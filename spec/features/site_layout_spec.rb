@@ -41,5 +41,44 @@ feature "Site Layouts" do
       expect( page ).to have_link "About", href: about_path
       expect( page ).to have_link "Contact", href: contact_path
     end
+
+    context "header" do
+      shared_context "login as" do
+        let( :user ) do
+          user = create( :user )
+          visit login_path
+          fill_in "Email", with: user.email
+          fill_in "Password", with: user.password
+          click_button "Log in"
+          user
+        end
+      end
+
+      context "when not logged in" do
+        scenario "can access common pages" do
+          visit root_path
+
+          expect( page ).to have_link "Home", href: root_path
+          expect( page ).to have_link "Help", href: help_path
+          expect( page ).to have_link "Log in", href: login_path
+        end        
+      end
+
+      context "when logged in" do
+        include_context "login as"
+        scenario "can access various pages" do
+          user
+
+          visit root_path
+
+          expect( page ).to have_link "Home", href: root_path
+          expect( page ).to have_link "Help", href: help_path
+          expect( page ).to have_link "Users", href: users_path
+          expect( page ).to have_link "Profile", href: user_path( user )
+          expect( page ).to have_link "Settings", href: edit_user_path( user )
+          expect( page ).to have_link "Log out", href: logout_path
+        end
+      end
+    end
   end
 end

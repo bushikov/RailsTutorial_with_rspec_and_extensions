@@ -99,7 +99,8 @@ feature "Users Signup" do
   scenario "with valid input" do
     visit signup_path
 
-    expect( page ).to have_selector "form[action='/signup']"
+    # expect( page ).to have_selector "form[action='/signup']"
+    expect( page ).to have_selector "form[action='/users']"
   end
 
   scenario "valid signup information" do
