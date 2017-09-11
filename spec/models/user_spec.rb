@@ -89,4 +89,13 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe "#authenticated?" do
+    context "given wrong token" do
+      it "returns false" do
+        user = create( :user )
+        expect( user.authenticated?( :remember, "" ) ).to eq false
+      end
+    end
+  end
 end

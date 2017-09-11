@@ -103,7 +103,9 @@ feature "Users Signup" do
     expect( page ).to have_selector "form[action='/users']"
   end
 
-  scenario "valid signup information" do
+  scenario "valid signup information with account activation followed by wrong and correct activation" do
+    ActionMailer::Base.deliveries.clear
+
     visit signup_path
 
     expect{
@@ -114,8 +116,35 @@ feature "Users Signup" do
       click_button "Create my account"
     }.to change( User, :count ).by( 1 )
 
-    expect( current_path ).to eq user_path( 1 )
+    expect( ActionMailer::Base.deliveries.size ).to eq 1
 
-    expect( page ).to have_selector "div[class='alert alert-success']", text: "Welcome to the Sample App!"
+    expect( page ).to have_content "Please check your email to activate your account."
+
+    expect( current_path ).to eq root_path
+
+    u = User.find_by( email: "abc@abc.com" )
+
+    visit edit_account_activation_path( "wrong token",
+                                        email: "abc@abc.com" )
+    expect( page ).to have_content "Invalid activation link"
+    expect( current_path ).to eq root_path
+    expect( page ).not_to have_content "Log out"
+
+    regex = %r|(?<=account_activations/)[\w-]*(?=/edit)|
+    activation_token = regex.match(
+      ActionMailer::Base.deliveries.last.body.encoded )[ 0 ]
+
+    visit edit_account_activation_path( activation_token,
+                                        email: "bad address" )
+    expect( page ).to have_content "Invalid activation link"
+    expect( current_path ).to eq root_path
+    expect( page ).not_to have_content "Log out"
+
+    visit edit_account_activation_path( activation_token,
+                                        email: u.email )
+    
+    expect( page ).to have_content "Account activated!"
+    expect( current_path ).to eq user_path( u )
+    expect( page ).to have_content "Log out"
   end
 end

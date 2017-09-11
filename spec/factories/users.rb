@@ -5,6 +5,8 @@ FactoryGirl.define do
     # password_digest User.digest( "password" )
     password "password"
     password_confirmation "password"
+    activated true
+    activated_at Time.zone.now
 
     factory :michael do
       name "Admin Michael"
@@ -38,6 +40,11 @@ FactoryGirl.define do
       sequence( :email ){ | n | "example-#{ n }@example.com" }
       password "password"
       password_confirmation "password"
+    end
+
+    factory :not_activated do
+      activated false
+      activated_at nil
     end
   end
 end

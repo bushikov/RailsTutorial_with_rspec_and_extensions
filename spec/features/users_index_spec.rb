@@ -56,4 +56,23 @@ feature "Users index" do
 
     end
   end
+  context "activation confirmation" do
+    include_context "logged in", :michael
+  
+    scenario "user not activated doesn't appear on index page" do
+      michael
+      not_activated = create( :not_activated )
+
+      visit users_path
+      expect( page ).not_to have_content not_activated.name
+    end
+
+    scenario "not activated user's page can't be opend" do
+      michael
+      not_activated = create( :not_activated )
+
+      visit user_path( not_activated )
+      expect( current_path ).to eq root_path
+    end
+  end
 end

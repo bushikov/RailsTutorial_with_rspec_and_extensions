@@ -27,13 +27,18 @@ RSpec.describe UsersController, type: :controller do
     context "given valid input" do
       it "redirects to :show" do
         post :create, params: valid_user
-        expect( response ).to redirect_to user_path( 1 )
+        expect( response ).to redirect_to root_url
         expect( flash ).not_to be_empty
       end
 
-      it "results in logged in" do
+      it "results in not logged in yet" do
         post :create, params: valid_user
-        expect( is_logged_in? ).to eq true
+        expect( is_logged_in? ).to eq false
+      end
+
+      specify "new user is not activated yet" do
+        post :create, params: valid_user
+        expect( assigns( :user ) ).not_to be_activated
       end
     end
   end
