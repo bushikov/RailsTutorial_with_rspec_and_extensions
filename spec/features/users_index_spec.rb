@@ -43,7 +43,6 @@ feature "Users index" do
       users = User.paginate( page: 1 )
       first_user = users.first
 
-
       visit users_path
 
       expect( page ).to have_selector "a[href='#{ user_path( first_user ) }']", text: "delete"

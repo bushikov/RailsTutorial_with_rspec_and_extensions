@@ -174,7 +174,7 @@ RSpec.describe UsersController, type: :controller do
           delete :destroy, params: { id: archer.id }
         }.not_to change( User, :count )
 
-        expect( response ).to redirect_to root_url
+        expect( response ).to redirect_to login_url
       end
     end
 
