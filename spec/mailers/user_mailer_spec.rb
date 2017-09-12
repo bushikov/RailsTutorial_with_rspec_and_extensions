@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe UserMailer, type: :mailer do
   describe "account_activation" do
-    let( :archer ){ user = create( :archer ) }
+    let( :archer ){ create( :archer ) }
     let(:mail) { UserMailer.account_activation( archer ) }
 
     it "renders the headers" do
@@ -20,18 +20,24 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
-  # describe "password_reset" do
-  #   let(:mail) { UserMailer.password_reset }
-  #
-  #   it "renders the headers" do
-  #     expect(mail.subject).to eq("Password reset")
-  #     expect(mail.to).to eq(["to@example.org"])
-  #     expect(mail.from).to eq(["from@example.com"])
-  #   end
-  #
-  #   it "renders the body" do
-  #     expect(mail.body.encoded).to match("Hi")
-  #   end
-  # end
+  describe "password_reset" do
+    let( :archer ){ create( :archer ) }
+    let(:mail) { UserMailer.password_reset( archer ) }
+
+    it "renders the headers" do
+      archer.reset_token = User.new_token
+
+      expect( mail.subject ).to eq "Password reset"
+      expect( mail.to ).to eq [ archer.email ]
+      expect( mail.from ).to eq [ "noreply@example.com" ]
+    end
+
+    it "renders the body" do
+      archer.reset_token = User.new_token
+
+      expect( mail.body.encoded ).to match archer.reset_token
+      expect( mail.body.encoded ).to match CGI.escape( archer.email )
+    end
+  end
 
 end
