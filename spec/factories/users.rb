@@ -19,6 +19,12 @@ FactoryGirl.define do
       email "duchess@example.gov"
       password "password"
       password_confirmation "password"
+      after( :create ) do | user |
+        35.times do
+          user.microposts.create(
+            content: Faker::Lorem.sentence( 5 ) )
+        end
+      end
     end
 
     factory :lana do
