@@ -21,6 +21,12 @@ feature "Users Login" do
   feature "login with valid information followed by logout" do
     before do
       @user = create( :user )
+      @archer = create( :archer )
+      @lana = create( :lana )
+
+      @user.follow( @archer )
+      @user.follow( @lana )
+      @archer.follow( @user )
     end
 
     scenario "the correct page is rendered" do
@@ -33,6 +39,9 @@ feature "Users Login" do
       expect( page ).not_to have_selector "a[href='#{ login_path }']"
       expect( page ).to have_selector "a[href='#{ logout_path }']"
       expect( page ).to have_selector "a[href='#{ user_path( @user ) }']"
+
+      expect( page ).to have_selector "strong[id='following']", text: 2
+      expect( page ).to have_selector "strong[id='followers']", text: 1
 
       # click_link "Account"
       click_link "Log out"

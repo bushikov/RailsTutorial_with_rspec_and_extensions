@@ -32,5 +32,7 @@ module S2
                        request_specs: false
       g.fixture_replacement :factory_girl, dir: "spec/factories"
     end
+
+    config.action_view.embed_authenticity_token_in_remote_forms = true
   end
 end

@@ -98,4 +98,49 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe "#feed" do
+    context "when its own microposts" do
+      it "includes its own microposts" do
+        archer = create( :archer )
+
+        50.times do
+          create( :micropost, user: archer )
+        end
+
+        archer.microposts.each do | post |
+          expect( archer.feed ).to include( post )
+        end
+      end
+    end
+
+    context "when one follows the other" do
+      it "includes following's microposts" do
+        archer = create( :archer )
+        lana = create( :lana )
+        archer.follow( lana )
+        50.times do
+          create( :micropost, user: lana )
+        end
+
+        lana.microposts.each do | post |
+          expect( archer.feed ).to include( post )
+        end
+      end
+    end
+
+    context "when one doesn't follow the other" do
+      it "doesn't include the other's posts" do
+        archer = create( :archer )
+        lana = create( :lana )
+        50.times do
+          create( :micropost, user: lana )
+        end
+        
+        lana.microposts.each do | post |
+          expect( archer.feed ).not_to include( post )
+        end
+      end
+    end
+  end
 end

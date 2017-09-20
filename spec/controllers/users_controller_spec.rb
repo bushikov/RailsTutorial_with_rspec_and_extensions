@@ -197,4 +197,28 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe "GET #following" do
+    let( :archer ){ create( :archer ) }
+    let( :lana ){ create( :lana ) }
+
+    context "when not logged in" do
+      it "redirects to login url" do
+        get :following, params: { id: archer.id }
+        expect( response ).to redirect_to login_url
+      end
+    end
+  end
+
+  describe "GET #followers" do
+    let( :archer ){ create( :archer ) }
+    let( :lana ){ create( :lana ) }
+
+    context "when not logged in" do
+      it "redirects to login url" do
+        get :followers, params: { id: archer.id }
+        expect( response ).to redirect_to login_url
+      end
+    end
+  end
 end
