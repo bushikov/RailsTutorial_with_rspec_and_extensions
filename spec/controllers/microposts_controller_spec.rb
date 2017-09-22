@@ -16,6 +16,25 @@ RSpec.describe MicropostsController, type: :controller do
         expect( response ).to redirect_to login_url
       end
     end
+    
+    context "when logged in" do
+      context "given replied content" do
+        it "saves posting user id at in_reply_to column in Microposts" do
+          archer = create( :archer )
+          lana = create( :lana )
+          log_in_as( archer )
+
+          content = "@Lana Kane\r\nHello"
+
+          post :create, params: { micropost:
+                                  { content: content } }
+
+          post_a = Micropost.find_by( content: content )
+
+          expect( post_a.in_reply_to ).to eq lana.id
+        end
+      end
+    end
   end
 
   describe "#destroy" do

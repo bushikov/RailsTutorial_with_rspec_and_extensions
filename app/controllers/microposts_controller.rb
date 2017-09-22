@@ -3,7 +3,17 @@ class MicropostsController < ApplicationController
   before_action :correct_user, only: :destroy
 
   def create
-    @micropost = current_user.microposts.build( micropost_params )
+    res = params[ :micropost ][ :content ].match( /\A(@)([\w\s.-]+)(\r\n)/ )
+
+    if res
+      replied_user = User.find_by( name: res[ 2 ] )
+      replied_id = replied_user.id if replied_user
+    else
+      replied_id = nil
+    end
+
+    @micropost = current_user.microposts.build(
+      micropost_params.merge( in_reply_to: replied_id ) )
     if @micropost.save
       flash[ :success ] = "Micropost created!"
       redirect_to root_url

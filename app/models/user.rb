@@ -17,7 +17,8 @@ class User < ApplicationRecord
   before_create :create_activation_digest
 
   validates :name, presence: true,
-                   length: { maximum: 50 }
+                   length: { maximum: 50 },
+                   uniqueness: { case_sensitive: false }
   validates :email, presence: true,
                     length: { maximum: 255 },
                     format: { with: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i },
@@ -77,9 +78,9 @@ class User < ApplicationRecord
   end
 
   def feed
-    following_ids = "SELECT followed_id FROM relationships
-                     WHERE follower_id = :user_id"
-    Micropost.where( "user_id IN (#{ following_ids }) OR user_id = :user_id", user_id: id )
+    Micropost.my_posts( id ).
+    or( Micropost.following_posts( id ) ).
+    or( Micropost.including_replies( id ) )
   end
 
   def follow( other_user )
