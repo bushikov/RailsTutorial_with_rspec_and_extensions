@@ -1,24 +1,22 @@
-# README
+Rails tutorial sample application
+---
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Overview
 
-Things you may want to cover:
+## Description
+This app is based on Rails tutorial Japanese version. And its tests based on minitest are replaced with ones based on RSpec with Capybara.
 
-* Ruby version
+## Extensions
 
-* System dependencies
+### Reply
+If you addes "@<name>\n" to the head of micropost, you can reply to specific user whome <name> indicates.
 
-* Configuration
+Reply can be seen only by sender and receiver.
 
-* Database creation
+### Messages
 
-* Database initialization
 
-* How to run the test suite
+### Notification of follow
 
-* Services (job queues, cache servers, search engines, etc.)
 
-* Deployment instructions
-
-* ...
+### Searching
