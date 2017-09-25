@@ -148,7 +148,9 @@ RSpec.describe User, type: :model do
     it "returns the messages user sent" do
       archer = create( :archer )
       lana = create( :lana )
-      message = archer.sending.create( receiver_id: lana.id )
+      message = archer.sending.create( receiver_id: lana.id,
+                                       content: "a" )
+      message.reload
       expect( archer.sending ).to include message
     end
   end
@@ -157,7 +159,9 @@ RSpec.describe User, type: :model do
     it "returns the messages user received" do
       archer = create( :archer )
       lana = create( :lana )
-      message = archer.sending.create( receiver_id: lana.id )
+      message = archer.sending.create( receiver_id: lana.id,
+                                       content: "a" )
+      message.reload
       expect( lana.receiving ).to include message
     end
   end
