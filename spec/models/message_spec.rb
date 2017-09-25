@@ -43,11 +43,7 @@ RSpec.describe Message, type: :model do
     end
 
     context "given blank to content" do
-      let( :archer ){ create( :archer ) }
-      let( :lana ){ create( :lana ) }
-      let( :message ){ Message.new( sender_id: archer.id,
-                                    receiver_id: lana.id,
-                                    content: "" ) }
+      let( :message ){ build( :message, content: "" ) }
       it "returns false" do
         expect( message ).not_to be_valid
       end
@@ -60,11 +56,7 @@ RSpec.describe Message, type: :model do
     end
 
     context "given over 140 characters to content" do
-      let( :archer ){ create( :archer ) }
-      let( :lana ){ create( :lana ) }
-      let( :message ){ Message.new( sender_id: archer.id,
-                                    receiver_id: lana.id,
-                                    content: "a" * 141 ) }
+      let( :message ){ build( :message, content: "a" * 141 ) }
       it "returns false" do
         expect( message ).not_to be_valid
       end
@@ -77,14 +69,19 @@ RSpec.describe Message, type: :model do
     end
 
     context "given less than or equal 140 characters to content" do
-      let( :archer ){ create( :archer ) }
-      let( :lana ){ create( :lana ) }
-      let( :message ){ Message.new( sender_id: archer.id,
-                                    receiver_id: lana.id,
-                                    content: "a" * 140 ) }
+      let( :message ){ create( :message, content: "a" * 140 ) }
       it "returns true" do
         expect( message ).to be_valid
       end
+    end
+  end
+
+  describe "<order>" do
+    it "is descending by created_at" do
+      create( :message )
+      second = create( :message )
+      
+      expect( Message.first ).to eq second
     end
   end
 end
