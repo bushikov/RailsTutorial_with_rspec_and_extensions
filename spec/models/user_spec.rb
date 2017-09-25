@@ -143,4 +143,22 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe "#sending" do
+    it "returns the messages user sent" do
+      archer = create( :archer )
+      lana = create( :lana )
+      message = archer.sending.create( receiver_id: lana.id )
+      expect( archer.sending ).to include message
+    end
+  end
+
+  describe "#receiving" do
+    it "returns the messages user received" do
+      archer = create( :archer )
+      lana = create( :lana )
+      message = archer.sending.create( receiver_id: lana.id )
+      expect( lana.receiving ).to include message
+    end
+  end
 end
