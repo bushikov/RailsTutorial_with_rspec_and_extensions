@@ -5,6 +5,8 @@ RSpec.describe Message, type: :model do
     it "returns the user who sent a message" do
       archer = create( :archer )
       lana = create( :lana )
+      archer.follow( lana )
+      lana.follow( archer )
       message = Message.create( sender_id: archer.id,
                                 receiver_id: lana.id,
                                 content: "a" )
@@ -17,6 +19,8 @@ RSpec.describe Message, type: :model do
     it "returns the user who received a message" do
       archer = create( :archer )
       lana = create( :lana )
+      archer.follow( lana )
+      lana.follow( archer )
       message = Message.create( sender_id: archer.id,
                                 receiver_id: lana.id,
                                 content: "a" )
@@ -71,6 +75,67 @@ RSpec.describe Message, type: :model do
     context "given less than or equal 140 characters to content" do
       let( :message ){ create( :message, content: "a" * 140 ) }
       it "returns true" do
+        expect( message ).to be_valid
+      end
+    end
+
+    context "when both not following" do
+      let( :archer ){ create( :archer ) }
+      let( :lana ){ create( :lana ) }
+      let( :message ){ Message.new( content: "a",
+                                    sender_id: archer.id,
+                                    receiver_id: lana.id ) }
+      it "returns false" do
+        expect( message ).not_to be_valid
+      end
+      specify "Message has the error message" do
+        message.valid?
+        expect( message.errors.messages ).to \
+          include( relationship: [ "should be mutual follow" ] )
+      end
+    end
+    
+    context "when only sender follows" do
+      let( :archer ){ create( :archer ) }
+      let( :lana ){ create( :lana ) }
+      let( :message ){ Message.new( content: "a",
+                                    sender_id: archer.id,
+                                    receiver_id: lana.id ) }
+      before do
+        archer.follow( lana )
+      end
+      it "returns false" do
+        expect( message ).not_to be_valid
+      end
+      specify "Message has the error message" do
+        message.valid?
+        expect( message.errors.messages ).to \
+          include( relationship: [ "should be mutual follow" ] )
+      end
+    end
+    
+    context "when only receiver follows" do
+      let( :archer ){ create( :archer ) }
+      let( :lana ){ create( :lana ) }
+      let( :message ){ Message.new( content: "a",
+                                    sender_id: archer.id,
+                                    receiver_id: lana.id ) }
+      before do
+        lana.follow( archer )
+      end
+      it "returns false" do
+        expect( message ).not_to be_valid
+      end
+      specify "Message has the error message" do
+        message.valid?
+        expect( message.errors.messages ).to \
+          include( relationship: [ "should be mutual follow" ] )
+      end
+    end
+
+    context "when both following" do
+      it "returns true" do
+        message = create( :message )
         expect( message ).to be_valid
       end
     end

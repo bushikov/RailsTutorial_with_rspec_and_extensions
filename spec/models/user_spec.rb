@@ -148,6 +148,8 @@ RSpec.describe User, type: :model do
     it "returns the messages user sent" do
       archer = create( :archer )
       lana = create( :lana )
+      archer.follow( lana )
+      lana.follow( archer )
       message = archer.sending.create( receiver_id: lana.id,
                                        content: "a" )
       message.reload
@@ -159,6 +161,8 @@ RSpec.describe User, type: :model do
     it "returns the messages user received" do
       archer = create( :archer )
       lana = create( :lana )
+      archer.follow( lana )
+      lana.follow( archer )
       message = archer.sending.create( receiver_id: lana.id,
                                        content: "a" )
       message.reload
