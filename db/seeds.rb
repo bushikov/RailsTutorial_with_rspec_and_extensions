@@ -30,3 +30,10 @@ following = users[ 2 .. 50 ]
 followers = users[ 3 .. 40 ]
 following.each{ | followed | user.follow( followed ) }
 followers.each{ | follower | follower.follow( user ) }
+
+Message.create!( content: "Hello! It's message!",
+                 sender_id: user.id,
+                 receiver_id: followers[ 0 ].id )
+Message.create!( content: "Thank you for your message!",
+                 sender_id: followers[ 0 ].id,
+                 receiver_id: user.id )
