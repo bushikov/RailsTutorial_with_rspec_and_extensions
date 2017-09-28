@@ -169,4 +169,32 @@ RSpec.describe User, type: :model do
       expect( lana.receiving ).to include message
     end
   end
+
+  describe "#messages" do
+    context "when having no messages" do
+      it "returns empty" do
+        archer = create( :archer )
+        expect( archer.messages ).to be_empty
+      end
+    end
+
+    context "when having messages" do
+      let( :archer ){ create( :archer ) }
+      let( :lana ){ create( :lana ) }
+      let( :message ){ archer.messages.create( receiver_id: lana.id,
+                                               content: "Hello" ) }
+      before do
+        archer.follow( lana )
+        lana.follow( archer )
+        message
+      end
+      it "returns the messages according to sender" do
+        expect( archer.messages ).to include message
+      end
+
+      it "returns the messages according to receiver" do
+        expect( lana.messages ).to include message
+      end
+    end
+  end
 end

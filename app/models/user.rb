@@ -99,6 +99,10 @@ class User < ApplicationRecord
     following.include?( other_user )
   end
 
+  def messages
+    sending.or( receiving )
+  end
+
   private
     def create_activation_digest
       self.activation_token = User.new_token
