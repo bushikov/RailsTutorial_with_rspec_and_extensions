@@ -1,0 +1,22 @@
+<% provide( :title, "Messages" ) %>
+<div class="row">
+  <aside class="col-md-4">
+    <section class="user_info">
+      <%= gravatar_for current_user %>
+      <h1><%= current_user.name %></h1>
+      <span><%= link_to "view_my_profile", current_user %></span>
+      <span><b>Messages:</b><%= @messages.count %></span>
+    </section>
+    <section class="stats">
+      <%= render "shared/stats" %>
+    </section>
+  </aside>
+  <div class="col-md-8">
+    <h3>Messages</h3>
+    <% if @messages.any? %>
+      <ol class="messages">
+        <%= render @messages %>
+      </ol>
+    <% end %>
+  </div>
+</div>
