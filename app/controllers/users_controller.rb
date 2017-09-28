@@ -4,8 +4,9 @@ class UsersController < ApplicationController
                                          :update,
                                          :destroy,
                                          :following,
-                                         :followers ]
-  before_action :correct_user, only: [ :edit, :update ]
+                                         :followers,
+                                         :messages ]
+  before_action :correct_user, only: [ :edit, :update, :messages ]
   before_action :admin_user, only: :destroy
 
   def new
@@ -67,6 +68,10 @@ class UsersController < ApplicationController
     @user = User.find( params[ :id ] )
     @users = @user.followers.paginate( page: params[ :page ] )
     render "show_follow"
+  end
+
+  def messages
+    @messages = current_user.messages
   end
 
   private

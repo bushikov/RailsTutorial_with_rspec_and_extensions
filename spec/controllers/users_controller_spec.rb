@@ -221,4 +221,54 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe "GET #messages" do
+    let( :archer ){ create( :archer ) }
+    let( :lana ){ create( :lana ) }
+
+    before do
+      archer.follow( lana )
+      lana.follow( archer )
+    end
+    
+    context "when not logged in" do
+      it "redirects to login url" do
+        get :messages, params: { id: archer.id }
+        expect( response ).to redirect_to login_url
+      end
+    end
+
+    context "when logged in as third party" do
+      let( :malory ){ create( :malory ) }
+      let( :message ){ archer.sending.create( receiver_id: lana.id,
+                                              content: "Hello" ) }
+      before do
+        message
+        log_in_as( malory )
+      end
+
+      it "redirects to root url" do
+        get :messages, params: { id: archer.id }
+        expect( response ).to redirect_to root_url
+      end
+    end
+
+    context "when logged in" do
+      let( :message ){ archer.sending.create( receiver_id: lana.id,
+                                              content: "Hello" ) }
+      before do
+        log_in_as( archer )
+        message
+        get :messages, params: { id: archer.id }
+      end
+
+      it "assigns @messages to messages" do
+        expect( assigns( :messages ) ).to include message
+      end
+
+      it "renders messages" do
+        expect( response ).to render_template :messages
+      end
+    end
+  end
 end
