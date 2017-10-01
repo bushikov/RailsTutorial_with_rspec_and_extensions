@@ -14,6 +14,8 @@ feature "Message" do
 
       visit messages_user_path( user.id )
 
+      expect( page ).to have_content( "#{ user.sending.count.to_s } sending" )
+      expect( page ).to have_content( "#{ user.receiving.count.to_s } receiving" )
       expect( page ).to have_content( message.content )
       expect( page ).to have_selector( "li[id='message-#{ message.id }']" )
       expect( page ).to have_selector( "a[href='#{ user_path( user.id ) }']", text: user.name )
@@ -32,6 +34,8 @@ feature "Message" do
 
       visit messages_user_path( receiver.id )
 
+      expect( page ).to have_content( "#{ receiver.sending.count.to_s } sending" )
+      expect( page ).to have_content( "#{ receiver.receiving.count.to_s } receiving" )
       expect( page ).to have_content( message.content )
       expect( page ).to have_selector( "li[id='message-#{ message.id }']" )
       expect( page ).to have_selector( "a[href='#{ user_path( sender.id ) }']", text: sender.name )

@@ -5,7 +5,11 @@
       <%= gravatar_for current_user %>
       <h1><%= current_user.name %></h1>
       <span><%= link_to "view_my_profile", current_user %></span>
-      <span><b>Messages:</b><%= @messages.count %></span>
+      <span>
+        <%= current_user.sending.count.to_s %> sending
+        <%= " | " %>
+        <%= current_user.receiving.count.to_s %> receiving
+      </span>
     </section>
     <section class="stats">
       <%= render "shared/stats" %>
