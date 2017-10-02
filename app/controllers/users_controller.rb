@@ -71,6 +71,8 @@ class UsersController < ApplicationController
   end
 
   def messages
+    @users = current_user.mutual_following
+    @message = current_user.messages.build
     @messages = current_user.messages
   end
 
