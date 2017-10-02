@@ -41,6 +41,13 @@ FactoryGirl.define do
       password_confirmation "password"
     end
 
+    factory :bob do
+      name "Bob Sap"
+      email "bob@example.go.jp"
+      password "password"
+      password_confirmation "password"
+    end
+
     factory :unspecified do
       sequence( :name ){ Faker::Name.name }
       sequence( :email ){ | n | "example-#{ n }@example.com" }

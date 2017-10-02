@@ -103,6 +103,10 @@ class User < ApplicationRecord
     sending.or( receiving )
   end
 
+  def mutual_following
+    following & followers
+  end
+
   private
     def create_activation_digest
       self.activation_token = User.new_token

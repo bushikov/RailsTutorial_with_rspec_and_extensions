@@ -197,4 +197,32 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe "#mutual_following" do
+    let( :archer ){ create( :archer ) }
+    let( :lana ){ create( :lana ) }
+    let( :malory ){ create( :malory ) }
+    let( :bob ){ create( :bob ) }
+
+    before do
+      archer.follow( lana )
+      lana.follow( archer )
+      archer.follow( malory )
+      bob.follow( archer )
+    end
+
+    context "when the user has several users who he is mutually following, only following, or only being followed" do
+      it "gives users who the user is mutually following" do
+        expect( archer.mutual_following ).to include( lana )
+      end
+
+      it "doesn't give user who the user is only following" do
+        expect( archer.mutual_following ).not_to include( malory )
+      end
+
+      it "doesn't give user who the user is only being followed" do
+        expect( archer.mutual_following ).not_to include( bob )
+      end
+    end
+  end
 end
