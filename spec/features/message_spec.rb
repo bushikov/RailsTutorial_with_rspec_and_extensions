@@ -42,4 +42,41 @@ feature "Message" do
       expect( page ).to have_selector( "a[href='#{ user_path( receiver.id ) }']", text: receiver.name )
     end
   end
+
+  context "message sending" do
+    let( :archer ){ create( :archer ) }
+    let( :lana ){ create( :lana ) }
+    let( :malory ){ create( :malory ) }
+    let( :bob ){ create( :bob ) }
+
+    before do
+      archer.follow( lana )
+      lana.follow( archer )
+      archer.follow( malory )
+      bob.follow( archer )
+    end
+
+    scenario "sending" do
+      visit login_path
+      fill_in "Email", with: archer.email
+      fill_in "Password", with: archer.password
+      click_button "Log in"
+
+      visit messages_user_path( archer )
+
+      expect( page ).to have_select( "message[receiver_id]",
+                                     options: [ "== choose user ==",
+                                                lana.name ] )
+
+      select lana.name, from: "message_receiver_id"
+      fill_in "message_content", with: "Hello"
+      click_button "Send"
+
+      expect( current_path ).to eq messages_user_path( archer )
+      expect( page ).to have_content( "Hello" )
+      expect( page ).to have_selector( "li[id='message-1']" )
+      expect( page ).to have_selector( "a[href='#{ user_path( archer ) }']" )
+      expect( page ).to have_selector( "a[href='#{ user_path( lana ) }']" )
+    end
+  end
 end
