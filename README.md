@@ -14,7 +14,7 @@ If you addes "@<name>\n" to the head of micropost, you can reply to specific use
 Reply can be seen only by sender and receiver.
 
 ### Messages
-
+You can send the messages to the specific user who you're mutually following.
 
 ### Notification of follow
 
