@@ -14,6 +14,7 @@ class User < ApplicationRecord
                      foreign_key: "sender_id"
   has_many :receiving, class_name: "Message",
                        foreign_key: "receiver_id"
+  has_many :notifications, dependent: :destroy
   attr_accessor :remember_token,
                 :activation_token,
                 :reset_token

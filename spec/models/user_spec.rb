@@ -225,4 +225,18 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe "#notifications" do
+    let( :archer ){ create( :archer ) }
+    it "returns notifiacations which are related to the user" do
+      notification1 = Notification.new( user_id: archer.id,
+                                        type: 1 )
+      notification1.save
+      notification2 = Notification.new( user_id: archer.id,
+                                        type: 2 )
+      notification2.save
+      expect( archer.notifications ).to include( notification1,
+                                                 notification2 )
+    end
+  end
 end
