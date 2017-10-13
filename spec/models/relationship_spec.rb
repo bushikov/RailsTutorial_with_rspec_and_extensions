@@ -60,4 +60,16 @@ RSpec.describe Relationship, type: :model do
       end
     end
   end
+
+  describe "after save call back" do
+    context "when someone follows another" do
+      it "creates a notification" do
+        archer = create( :archer )
+        lana = create( :lana )
+        archer.follow( lana )
+        notification = Notification.first
+        expect( notification.user_id ).to eq lana.id
+      end
+    end
+  end
 end
