@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Notification, type: :model do
-  describe "#valid?" do
+  describe "validation" do
     let( :archer ){ create( :archer ) }
     context "not given type" do
       it "returns false" do
@@ -31,6 +31,17 @@ RSpec.describe Notification, type: :model do
       notification = Notification.new( user_id: archer.id,
                                        type: 1 )
       expect( notification.user ).to eq archer
+    end
+  end
+
+  describe "order" do
+    it "is descending order of created_at" do
+      archer = create( :archer )
+      n1 = Notification.create( user_id: archer.id,
+                                type: 1 )
+      n2 = Notification.create( user_id: archer.id,
+                                type: 2 )
+      expect( Notification.first ).to eq n2
     end
   end
 end
