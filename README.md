@@ -16,7 +16,9 @@ Reply can be seen only by sender and receiver.
 ### Messages
 You can send the messages to the specific user who you're mutually following.
 
-### Notification of follow
+### Notification
+the receiver as follows will be received notification. The one which has been presented at least one time won't be presented again.
 
+- following
 
 ### Searching
