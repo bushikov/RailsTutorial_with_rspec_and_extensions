@@ -5,6 +5,7 @@ class Relationship < ApplicationRecord
   validates :followed_id, presence: true
 
   after_save do
-    followed.notifications.create( type: 1 )
+    followed.notifications.create( type: 1,
+                                   content: "#{ follower.name } followed you." )
   end
 end

@@ -1,0 +1,9 @@
+<% if current_user.notifications.any? %>
+  <div class="notification">
+    <ol>
+    <% current_user.notifications.each do | n | %>
+      <li><%= time_ago_in_words( n.created_at ) %>ago | <%= n.content %></li>
+    <% end %>
+  </ol>
+  </div>
+<% end %>
