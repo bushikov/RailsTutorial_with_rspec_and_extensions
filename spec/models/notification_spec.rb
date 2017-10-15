@@ -34,14 +34,44 @@ RSpec.describe Notification, type: :model do
     end
   end
 
-  describe "order" do
-    it "is descending order of created_at" do
+  describe "default_scope" do
+    context "order" do
+      it "is descending order of created_at" do
+        archer = create( :archer )
+        n1 = Notification.create( user_id: archer.id,
+                                 type: 1 )
+        n2 = Notification.create( user_id: archer.id,
+                                 type: 2 )
+        expect( Notification.first ).to eq n2
+      end
+    end
+
+    context "where" do
+      specify "only the one with false on informed will be found" do
+        archer = create( :archer )
+        lana = create( :lana )
+        malory = create( :malory )
+
+        lana.follow( archer )
+        malory.follow( archer )
+
+        Notification.first
+
+        expect( Notification.first.content ).to include( lana.name )
+      end
+    end
+  end
+
+  describe "after_find" do
+    specify "the one which has been found at least one time won't be found" do
       archer = create( :archer )
-      n1 = Notification.create( user_id: archer.id,
-                                type: 1 )
-      n2 = Notification.create( user_id: archer.id,
-                                type: 2 )
-      expect( Notification.first ).to eq n2
+      lana = create( :lana )
+
+      Notification.new( type: 1, user_id: archer.id )
+
+      Notification.first
+
+      expect( Notification.first ).to be_nil
     end
   end
 end
