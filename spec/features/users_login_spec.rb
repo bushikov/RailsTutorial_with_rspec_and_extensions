@@ -32,20 +32,15 @@ feature "Users Login" do
     scenario "the correct page is rendered" do
       visit login_path
 
-      fill_in "Email", with: @user.email
-      fill_in "Password", with: "password"
-      click_button "Log in"
+      act_as( @user ) do
+        expect( page ).not_to have_selector "a[href='#{ login_path }']"
+        expect( page ).to have_selector "a[href='#{ logout_path }']"
+        expect( page ).to have_selector "a[href='#{ user_path( @user ) }']"
 
-      expect( page ).not_to have_selector "a[href='#{ login_path }']"
-      expect( page ).to have_selector "a[href='#{ logout_path }']"
-      expect( page ).to have_selector "a[href='#{ user_path( @user ) }']"
+        expect( page ).to have_selector "strong[id='following']", text: 2
+        expect( page ).to have_selector "strong[id='followers']", text: 1
+      end
 
-      expect( page ).to have_selector "strong[id='following']", text: 2
-      expect( page ).to have_selector "strong[id='followers']", text: 1
-
-      # click_link "Account"
-      click_link "Log out"
-      
       expect( page ).to have_selector "a[href='#{ login_path }']"
       expect( page ).not_to have_selector "a[href='#{ logout_path }']"
       expect( page ).not_to have_selector "a[href='#{ user_path( @user ) }']"

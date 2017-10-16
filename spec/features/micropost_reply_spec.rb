@@ -6,26 +6,20 @@ feature "Micropost reply" do
       create( :one_side )
       following_user = User.first
       followed_user = User.second
-
-      visit login_path
-      fill_in "Email", with: following_user.email
-      fill_in "Password", with: "password"
-      click_button "Log in"
-
+      
       content = "@#{ followed_user.name }\nHello"
 
-      visit root_path
-      fill_in "micropost[content]", with: content
-      click_button "Post"
+      following_user.password = "password"
+      act_as( following_user ) do
+        visit root_path
+        fill_in "micropost[content]", with: content
+        click_button "Post"
 
-      expect( page ).to have_content( content )
+        expect( page ).to have_content( content )
+      end
 
-      click_link "Log out"
-
-      visit login_path
-      fill_in "Email", with: followed_user.email
-      fill_in "Password", with: "password"
-      click_button "Log in"
+      followed_user.password = "password"
+      login( followed_user )
 
       visit root_path
       expect( page ).to have_content( content )
@@ -38,25 +32,19 @@ feature "Micropost reply" do
       following_user = User.first
       followed_user = User.second
 
-      visit login_path
-      fill_in "Email", with: followed_user.email
-      fill_in "Password", with: "password"
-      click_button "Log in"
-
       content = "@#{ following_user.name }\nHello"
 
-      visit root_path
-      fill_in "micropost[content]", with: content
-      click_button "Post"
+      followed_user.password = "password"
+      act_as( followed_user ) do
+        visit root_path
+        fill_in "micropost[content]", with: content
+        click_button "Post"
 
-      expect( page ).to have_content( content )
+        expect( page ).to have_content( content )
+      end
 
-      click_link "Log out"
-
-      visit login_path
-      fill_in "Email", with: following_user.email
-      fill_in "Password", with: "password"
-      click_button "Log in"
+      following_user.password = "password"
+      login( following_user )
 
       visit root_path
 
@@ -70,26 +58,19 @@ feature "Micropost reply" do
       user1 = User.first
       user2 = User.second
 
-
-      visit login_path
-      fill_in "Email", with: user1.email
-      fill_in "Password", with: "password"
-      click_button "Log in"
-
       content = "@#{ user2.name }\nHello"
 
-      visit root_path
-      fill_in "micropost[content]", with: content
-      click_button "Post"
+      user1.password = "password"
+      act_as( user1 ) do
+        visit root_path
+        fill_in "micropost[content]", with: content
+        click_button "Post"
 
-      expect( page ).to have_content( content )
+        expect( page ).to have_content( content )
+      end
 
-      click_link "Log out"
-
-      visit login_path
-      fill_in "Email", with: user1.email
-      fill_in "Password", with: "password"
-      click_button "Log in"
+      user2.password = "password"
+      login( user2 )
 
       visit root_path
 
@@ -104,23 +85,18 @@ feature "Micropost reply" do
       create( :one_side )
       following_user = User.first
       followed_user = User.second
-      
-      visit login_path
-      fill_in "Email", with: followed_user.email
-      fill_in "Password", with: "password"
-      click_button "Log in"
 
-      visit root_path
       content = "@#{ archer.name }\nHello"
-      fill_in "micropost[content]", with: content
-      click_button "Post"
 
-      click_link "Log out"
-
-      visit login_path
-      fill_in "Email", with: following_user.email
-      fill_in "Password", with: "password"
-      click_button "Log in"
+      followed_user.password = "password"
+      act_as( followed_user ) do
+        visit root_path
+        fill_in "micropost[content]", with: content
+        click_button "Post"
+      end
+      
+      following_user.password = "password"
+      login( following_user )
 
       visit root_path
 

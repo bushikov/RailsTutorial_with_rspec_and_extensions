@@ -5,30 +5,17 @@ feature "Notification" do
   let( :lana ){ create( :lana ) }
   let( :malory ){ create( :malory ) }
   scenario "Someone follows another" do
-    visit login_path
-    fill_in "Email", with: archer.email
-    fill_in "Password", with: archer.password
-    click_button "Log in"
+    act_as( archer ) do
+      visit user_path( lana )
+      click_button "Follow"
+    end
 
-    visit user_path( lana )
-    click_button "Follow"
+    act_as( malory ) do
+      visit user_path( lana )
+      click_button "Follow"
+    end
 
-    click_link "Log out"
-
-    visit login_path
-    fill_in "Email", with: malory.email
-    fill_in "Password", with: malory.password
-    click_button "Log in"
-
-    visit user_path( lana )
-    click_button "Follow"
-
-    click_link "Log out"
-
-    visit login_path
-    fill_in "Email", with: lana.email
-    fill_in "Password", with: lana.password
-    click_button "Log in"
+    login( lana )
 
     visit root_path
 
@@ -40,22 +27,14 @@ feature "Notification" do
     archer.follow( lana )
     lana.follow( archer )
 
-    visit login_path
-    fill_in "Email", with: archer.email
-    fill_in "Password", with: archer.password
-    click_button "Log in"
+    act_as( archer ) do
+      visit messages_user_path( archer )
+      select lana.name, from: "message_receiver_id"
+      fill_in "message_content", with: "HELLO"
+      click_button "Send"
+    end
 
-    visit messages_user_path( archer )
-    select lana.name, from: "message_receiver_id"
-    fill_in "message_content", with: "HELLO"
-    click_button "Send"
-
-    click_link "Log out"
-
-    visit login_path
-    fill_in "Email", with: lana.email
-    fill_in "Password", with: lana.password
-    click_button "Log in"
+    login( lana )
 
     visit messages_user_path( lana )
 
@@ -70,21 +49,13 @@ feature "Notification" do
   end
 
   scenario "Someone replied another" do
-    visit login_path
-    fill_in "Email", with: archer.email
-    fill_in "Password", with: archer.password
-    click_button "Log in"
+    act_as( archer ) do
+      visit root_path
+      fill_in "micropost[content]", with: "@#{ lana.name}\nHELLO"
+      click_button "Post"
+    end
 
-    visit root_path
-    fill_in "micropost[content]", with: "@#{ lana.name}\nHELLO"
-    click_button "Post"
-
-    click_link "Log out"
-
-    visit login_path
-    fill_in "Email", with: lana.email
-    fill_in "Password", with: lana.password
-    click_button "Log in"
+    login( lana )
 
     visit root_path
     expect( page ).to have_content( "#{ archer.name } replied to you." )

@@ -4,10 +4,7 @@ feature "Microposts interface" do
   scenario "confirm procedure" do
     archer = create( :archer )
     
-    visit login_path
-    fill_in "Email", with: archer.email
-    fill_in "Password", with: archer.password
-    click_button "Log in"
+    login( archer )
 
     visit root_path
 
@@ -44,20 +41,14 @@ feature "Microposts interface" do
   scenario "micropost sidebar count" do
     archer = create( :archer )
 
-    visit login_path
-    fill_in "Email", with: archer.email
-    fill_in "Password", with: archer.password
-    click_button "Log in"
+    act_as( archer ) do
+      visit root_path
 
-    visit root_path
-
-    expect( page.body ).to match "#{ archer.microposts.count } microposts"
+      expect( page.body ).to match "#{ archer.microposts.count } microposts"
+    end
 
     lana = create( :lana )
-    visit login_path
-    fill_in "Email", with: lana.email
-    fill_in "Password", with: lana.password
-    click_button "Log in"
+    login( lana )
 
     visit root_path
 

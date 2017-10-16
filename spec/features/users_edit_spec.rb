@@ -7,10 +7,7 @@ feature "Users Edit" do
 
       visit edit_user_path( user )
       
-      visit login_path
-      fill_in "Email", with: user.email
-      fill_in "Password", with: user.password
-      click_button "Log in"
+      login( user )
 
       expect( current_path ).to eq edit_user_path( user )
     end
@@ -23,10 +20,7 @@ feature "Users Edit" do
       visit user_path( user )
       visit edit_user_path( user )
 
-      visit login_path
-      fill_in "Email", with: user.email
-      fill_in "Password", with: user.password
-      click_button "Log in"
+      login( user )
 
       expect( current_path ).to eq edit_user_path( user )
     end
@@ -36,10 +30,7 @@ feature "Users Edit" do
     scenario "successful access to the user page" do
       user = create( :user )
 
-      visit login_path
-      fill_in "Email", with: user.email
-      fill_in "Password", with: user.password
-      click_button "Log in"
+      login( user )
 
       expect( current_path ).to eq user_path( user )
     end

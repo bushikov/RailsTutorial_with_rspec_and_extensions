@@ -18,16 +18,13 @@ feature "Following" do
     scenario "correct following" do
       following
       
-      visit login_path
-      fill_in "Email", with: michael.email
-      fill_in "Password", with: michael.password
-      click_button "Log in"
-      
-      visit following_user_path( michael )
-      expect( page.body ).to match michael.following.count.to_s
+      act_as( michael ) do
+        visit following_user_path( michael )
+        expect( page.body ).to match michael.following.count.to_s
 
-      michael.following.each do | user |
-        expect( page ).to have_selector "a[href='#{ user_path( user ) }']"
+        michael.following.each do | user |
+          expect( page ).to have_selector "a[href='#{ user_path( user ) }']"
+        end
       end
     end
   end
@@ -37,16 +34,13 @@ feature "Following" do
     scenario "correct followers" do
       following
 
-      visit login_path
-      fill_in "Email", with: michael.email
-      fill_in "Password", with: michael.password
-      click_button "Log in"
+      act_as( michael ) do
+        visit followers_user_path( michael )
+        expect( page.body ).to match michael.followers.count.to_s
 
-      visit followers_user_path( michael )
-      expect( page.body ).to match michael.followers.count.to_s
-
-      michael.followers.each do | user |
-        expect( page ).to have_selector "a[href='#{ user_path( user ) }']"
+        michael.followers.each do | user |
+          expect( page ).to have_selector "a[href='#{ user_path( user ) }']"
+        end
       end
     end
   end

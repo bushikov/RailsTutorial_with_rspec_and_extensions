@@ -6,10 +6,7 @@ feature "Users profile" do
   scenario "profile display" do
     archer = create( :archer )
 
-    visit login_path
-    fill_in "Email", with: archer.email
-    fill_in "Password", with: archer.password
-    click_button "Log in"
+    login( archer )
 
     expect( page ).to have_title( full_title( archer.name ) )
     expect( page ).to have_selector( "h1", text: archer.name )

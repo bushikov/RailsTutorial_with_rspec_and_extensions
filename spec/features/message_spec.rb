@@ -7,10 +7,9 @@ feature "Message" do
       user = User.first
       user2 = User.second
 
-      visit login_path
-      fill_in "Email", with: user.email
-      fill_in "Password", with: "password"
-      click_button "Log in"
+      user.password = "password"
+
+      login( user )
 
       visit messages_user_path( user.id )
 
@@ -27,10 +26,8 @@ feature "Message" do
       sender = User.first
       receiver = User.second
 
-      visit login_path
-      fill_in "Email", with: receiver.email
-      fill_in "Password", with: "password"
-      click_button "Log in"
+      receiver.password = "password"
+      login( receiver )
 
       visit messages_user_path( receiver.id )
 
@@ -57,10 +54,7 @@ feature "Message" do
     end
 
     scenario "sending" do
-      visit login_path
-      fill_in "Email", with: archer.email
-      fill_in "Password", with: archer.password
-      click_button "Log in"
+      login( archer )
 
       visit messages_user_path( archer )
 
