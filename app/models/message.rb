@@ -10,6 +10,11 @@ class Message < ApplicationRecord
                       length: { maximum: 140 }
   validate :mutual_follow
 
+  after_save do
+    receiver.notifications.create( type: 2,
+                                   content: "#{ sender.name } sent you a message." )
+  end
+
   private
     def mutual_follow
       # the presence validations of sender, receiver, sender_id,

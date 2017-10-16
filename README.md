@@ -20,5 +20,6 @@ You can send the messages to the specific user who you're mutually following.
 the receiver as follows will be received notification. The one which has been presented at least one time won't be presented again.
 
 - following
+- message
 
 ### Searching

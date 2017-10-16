@@ -149,4 +149,21 @@ RSpec.describe Message, type: :model do
       expect( Message.first ).to eq second
     end
   end
+
+  describe "after save call back" do
+    context "when someone sent message to another" do
+      it "creates a notification" do
+        archer = create( :archer )
+        lana = create( :lana )
+        archer.follow( lana )
+        lana.follow( archer )
+        archer.messages.create( receiver_id: lana.id,
+                                content: "HELLO" )
+
+        notification = Notification.first
+        expect( notification.type ).to eq 2
+        expect( notification.content ).to eq "#{ archer.name } sent you a message."
+      end
+    end
+  end
 end
