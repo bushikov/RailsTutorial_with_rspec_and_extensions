@@ -21,5 +21,6 @@ the receiver as follows will be received notification. The one which has been pr
 
 - following
 - message
+- reply
 
 ### Searching

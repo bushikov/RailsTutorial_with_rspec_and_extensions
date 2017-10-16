@@ -15,10 +15,29 @@ class Micropost < ApplicationRecord
                       length: { maximum: 140 }
   validate :picture_size
 
+  after_save do
+    if reply?
+      user_to_reply_to.notifications.create( type: 3,
+                        content: "#{ user.name } replied to you." )
+    end
+  end
+
   private
     def picture_size
       if picture.size > 5.megabytes
         errors.add( :picture, "should be less than 5MB" )
       end
+    end
+
+    def reply?
+      !!matched_thing_to_reply_to
+    end
+
+    def user_to_reply_to
+      User.find_by( name: matched_thing_to_reply_to[ 2 ] )
+    end
+
+    def matched_thing_to_reply_to
+      /\A(@)([\w\s.-]+)(\r\n)/.match( content )
     end
 end

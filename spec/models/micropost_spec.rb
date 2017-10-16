@@ -50,4 +50,25 @@ RSpec.describe Micropost, type: :model do
       }.to change( Micropost, :count ).by( -1 )
     end
   end
+
+  describe "after save call back" do
+    context "when someone replies to another" do
+      it "creates notification" do
+        archer = create( :archer )
+        lana = create( :lana )
+        archer.microposts.create( content: "@#{ lana.name }\r\nHELLO" )
+        notification = Notification.first
+        expect( notification.content ).to eq "#{ archer.name } replied to you."
+        expect( notification.user_id ).to eq lana.id
+      end
+    end
+    
+    context "when someon posts micropost which is not reply" do
+      it "doesn't create any notification" do
+        archer = create( :archer )
+        archer.microposts.create( content: "HELLO" )
+        expect( Notification.count ).to eq 0
+      end
+    end
+  end
 end

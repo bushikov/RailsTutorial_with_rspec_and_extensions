@@ -68,4 +68,25 @@ feature "Notification" do
 
     expect( page ).not_to have_content( "#{ archer.name } sent you a message." )
   end
+
+  scenario "Someone replied another" do
+    visit login_path
+    fill_in "Email", with: archer.email
+    fill_in "Password", with: archer.password
+    click_button "Log in"
+
+    visit root_path
+    fill_in "micropost[content]", with: "@#{ lana.name}\nHELLO"
+    click_button "Post"
+
+    click_link "Log out"
+
+    visit login_path
+    fill_in "Email", with: lana.email
+    fill_in "Password", with: lana.password
+    click_button "Log in"
+
+    visit root_path
+    expect( page ).to have_content( "#{ archer.name } replied to you." )
+  end
 end
