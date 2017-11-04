@@ -29,10 +29,14 @@ If you need data, execute the following command.
 bundle exec rails db:seed
 ```
 
+
 ## Extensions
+In addition to the rails tutorial, the following extensions are added.
+
+You can use the example user( email:example@railstutorial.org, password:foobar ) to see the following extensions
 
 ### Reply
-If you addes "@<name>\n" to the head of micropost, you can reply to the specific user whome <name> indicates.
+If you addes "@<name>" to the first line of micropost, you can reply to the specific user whome <name> indicates. Then, the reply in itself must start at the second line.
 
 Replies can be seen on home page.
 
@@ -51,5 +55,3 @@ The receiver as follows will be received notification. The one which has been pr
 - reply
 
 Notifications can be seen on home page.
-
-### Searching

@@ -31,6 +31,10 @@ followers = users[ 3 .. 40 ]
 following.each{ | followed | user.follow( followed ) }
 followers.each{ | follower | follower.follow( user ) }
 
+Micropost.create!( user_id: users.last.id,
+                   content: "@#{ user.name }\r\nHELLO",
+                   in_reply_to: user.id )
+
 Message.create!( content: "Hello! It's message!",
                  sender_id: user.id,
                  receiver_id: followers[ 0 ].id )
