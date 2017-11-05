@@ -13,14 +13,12 @@ Sqlite and ImageMagick have to be installed.
 sudo apt-get install libsqlite3-dev
 
 sudo apt-get install imagemagick --fix-missing
-
 ```
 
 ## Preparation
 
 ```
 bundle install
-
 bundle exec rails db:migrate
 ```
 
@@ -36,7 +34,7 @@ In addition to the rails tutorial, the following extensions are added.
 You can use the example user( email:example@railstutorial.org, password:foobar ) to see the following extensions
 
 ### Reply
-If you addes "@<name>" to the first line of micropost, you can reply to the specific user whome <name> indicates. Then, the reply in itself must start at the second line.
+If you addes "@{name}" to the first line of micropost, you can reply to the specific user whome {name} indicates. Then, the reply in itself must start at the second line.
 
 Replies can be seen on home page.
 
